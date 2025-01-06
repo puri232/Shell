@@ -1,6 +1,6 @@
 #!bin/bash
-P1=Ramesh
-P2=Suresh
+P1=$1
+P2=$2
 
 echo "$P1:: Hi $P2"
 echo "$P2:: Hello $P1"
