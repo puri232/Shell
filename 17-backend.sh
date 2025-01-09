@@ -41,8 +41,13 @@ VALIDATE $? "enablingg existing default nodejs"
 dnf install nodejs -y  &>>$LOGS_FILE_NAME
 VALIDATE $? "install NodeJs"
 
+id expense 
+if [$? -ne 0]
+then
 useradd expense  &>>$LOGS_FILE_NAME
 VALIDATE $? "Adding Expense user"
+else
+    echo -e "expense user already exist.. $Y SKIPPING $N"
 
 mkdir /app  &>>$LOGS_FILE_NAME
 VALIDATE $? "Directory app creation"
