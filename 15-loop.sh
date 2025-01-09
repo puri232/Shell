@@ -30,7 +30,7 @@ if [ $USRID -ne 0 ]
 for package in $@
 do
     dnf list installed $package &>>$LOGS_FILE_NAME
-    if  [ #? -ne 0 ]
+    if [ $? -ne 0 ]
     then
         dnf install $package -y &>>$LOGS_FILE_NAME
         VALIDATE $? "installing $package"
