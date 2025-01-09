@@ -28,13 +28,13 @@ if [ $USRID -ne 0 ]
         exit 1 #other than 1
     fi
 for package in $@
-do 
+do
     dnf list installed $package &>>$LOGS_FILE_NAME
     if [#? -ne 0]
     then
         dnf install $package -y &>>$LOGS_FILE_NAME
         VALIDATE $? "installing $package"
     else
-        echo -e "$package is already ...$YINSTALLED $N"
+        echo -e "$package is already ...$Y INSTALLED $N"
     fi
 done
