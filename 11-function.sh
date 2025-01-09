@@ -1,5 +1,4 @@
 #!/bin/bash
-#!/bin/bash
 
 USRID=$( id -u)
 VALIDATE () {
@@ -12,11 +11,11 @@ VALIDATE () {
     fi 
  }
 
-if [$USERID -ne 0]
-then 
-    echo "ERROR:: You must  have sudo access to execute this script"
-    exit 1 #other than 1
-fi
+    if [ $USERID -ne 0 ]
+    then 
+        echo "ERROR:: You must  have sudo access to execute this script"
+        exit 1 #other than 1
+    fi
 
 dnf list installed mysql
 
@@ -29,7 +28,7 @@ dnf list installed mysql
     fi
 
 dnf list installed git
-    if [$? -ne 0] #not installed
+    if [ $? -ne 0 ] #not installed
     then 
         dnf install git -y
         VALIDATE #? "Installing Git"
