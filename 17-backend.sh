@@ -48,6 +48,7 @@ useradd expense  &>>$LOGS_FILE_NAME
 VALIDATE $? "Adding Expense user"
 else
     echo -e "expense user already exist.. $Y SKIPPING $N"
+fi
 
 mkdir /app  &>>$LOGS_FILE_NAME
 VALIDATE $? "Directory app creation"
