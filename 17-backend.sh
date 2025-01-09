@@ -59,6 +59,7 @@ VALIDATE $? "curl"
 cd /app
 VALIDATE $? " app open for npm"
 
+rm -rf /app/*
 
 unzip /tmp/backend.zip  &>>$LOGS_FILE_NAME
 VALIDATE $? "unzip file"
@@ -75,7 +76,7 @@ VALIDATE $? "copy backend.service"
 systemctl daemon-reload
 VALIDATE $? "relaod deamon"
 
-systemctl start backend
+systemctl restart backend
 VALIDATE $? "start backend"
 
 systemctl enable backend
