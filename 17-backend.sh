@@ -79,11 +79,11 @@ VALIDATE $? "install mysql"
 mysql -h mysql.purnachandra.space -uroot -pExpenseApp@1 < /app/schema/backend.sql
 VALIDATE $? "input backend.sql app scheme"
 
-systemctl daemon-reload
+sudo systemctl daemon-reload
 VALIDATE $? "relaod deamon"
 
-systemctl enable backend
+sudo systemctl enable backend
 VALIDATE $? "enable backend"
 
-systemctl restart backend
+sudo systemctl restart backend
 VALIDATE $? "restart backend"
