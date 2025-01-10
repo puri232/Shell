@@ -8,7 +8,8 @@ N="\e[0m"
 
 SDIR="/app"
 
-FOLDER_NAME="/var/log/shelljaffa.log"
+mkdir -p /abc
+FOLDER_NAME="/abc"
 LOG_FILE=$(echo $0 | cut -d "." -f1 )
 TIMESTAMP=$(date +%Y-%m-%d-%H-%M-%S)
 LOGS_FILE_NAME="$FOLDER_NAME/$LOG_FILE-$TIMESTAMP.log"
