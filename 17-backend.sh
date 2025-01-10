@@ -1,89 +1,86 @@
 #!/bin/bash
 
-USRID=$( id -u)
+USERID=$(id -u)
 R="\e[31m"
 G="\e[32m"
 Y="\e[33m"
 N="\e[0m"
-FOLDER_NAME="/var/log/expense.log"
+
+LOGS_FOLDER="/var/log/expense-logs"
 LOG_FILE=$(echo $0 | cut -d "." -f1 )
 TIMESTAMP=$(date +%Y-%m-%d-%H-%M-%S)
-LOGS_FILE_NAME="$FOLDER_NAME/$LOG_FILE-$TIMESTAMP.log"
+LOG_FILE_NAME="$LOGS_FOLDER/$LOG_FILE-$TIMESTAMP.log"
 
-VALIDATE (){
+VALIDATE(){
     if [ $1 -ne 0 ]
     then
         echo -e "$2 ... $R FAILURE $N"
         exit 1
     else
-        echo -e "$2 ... $G SUCESSS $N" 
-    fi 
- }
-
-
-
-CHECK_ROOT() {
-if [ $USRID -ne 0 ]
-    then 
-        echo "ERROR:: You must  have sudo access to execute this script"
-        exit 1 #other than 1
+        echo -e "$2 ... $G SUCCESS $N"
     fi
 }
 
-mkdir -p $FOLDER_NAME
-
-echo "script started executing at : $TIMESTAMP" &>>$LOGS_FILE_NAME
+CHECK_ROOT(){
+    if [ $USERID -ne 0 ]
+    then
+        echo "ERROR:: You must have sudo access to execute this script"
+        exit 1 #other than 0
+    fi
+}
+mkdir -p $LOGS_FOLDER
+echo "Script started executing at: $TIMESTAMP" &>>$LOG_FILE_NAME
 
 CHECK_ROOT
 
-dnf module disable nodejs -y  &>>$LOGS_FILE_NAME
-VALIDATE $? "Disanling existing default nodejs"
+dnf module disable nodejs -y &>>$LOG_FILE_NAME
+VALIDATE $? "Disabling existing default NodeJS"
 
-dnf module enable nodejs:20 -y  &>>$LOGS_FILE_NAME
-VALIDATE $? "enablingg existing default nodejs"
+dnf module enable nodejs:20 -y &>>$LOG_FILE_NAME
+VALIDATE $? "Enabling NodeJS 20"
 
-dnf install nodejs -y  &>>$LOGS_FILE_NAME
-VALIDATE $? "install NodeJs"
+dnf install nodejs -y &>>$LOG_FILE_NAME
+VALIDATE $? "Installing NodeJS"
 
 id expense &>>$LOG_FILE_NAME
-if [$? -ne 0]
+if [ $? -ne 0 ]
 then
-    useradd expense  &>>$LOGS_FILE_NAME
-    VALIDATE $? "Adding Expense user"
+    useradd expense &>>$LOG_FILE_NAME
+    VALIDATE $? "Adding expense user"
 else
-    echo -e "expense user already exist.. $Y SKIPPING $N"
+    echo -e "expense user already exists ... $Y SKIPPING $N"
 fi
 
-mkdir -p /app &>>$LOGS_FILE_NAME
-VALIDATE $? "Directory app creation"
+mkdir -p /app &>>$LOG_FILE_NAME
+VALIDATE $? "Creating app directory"
 
-curl -o /tmp/backend.zip https://expense-builds.s3.us-east-1.amazonaws.com/expense-backend-v2.zip &>>$LOGS_FILE_NAME
-VALIDATE $? "curl"
+curl -o /tmp/backend.zip https://expense-builds.s3.us-east-1.amazonaws.com/expense-backend-v2.zip &>>$LOG_FILE_NAME
+VALIDATE $? "Downloading backend"
 
 cd /app
 rm -rf /app/*
 
-unzip /tmp/backend.zip  &>>$LOGS_FILE_NAME
-VALIDATE $? "unzip file"
+unzip /tmp/backend.zip &>>$LOG_FILE_NAME
+VALIDATE $? "unzip backend"
 
+npm install &>>$LOG_FILE_NAME
+VALIDATE $? "Installing dependencies"
 
-npm install  &>>$LOGS_FILE_NAME
-VALIDATE $? "install dependencies"
+cp /home/ec2-user/expense-shell/backend.service /etc/systemd/system/backend.service
 
-cp /home/ec2-user/Shell/backend.service /etc/systemd/system/backend.service  &>>$LOGS_FILE_NAME
+# Prepare MySQL Schema
 
+dnf install mysql -y &>>$LOG_FILE_NAME
+VALIDATE $? "Installing MySQL Client"
 
-dnf install mysql -y  &>>$LOGS_FILE_NAME
-VALIDATE $? "install mysql"
+mysql -h mysql.daws82s.online -uroot -pExpenseApp@1 < /app/schema/backend.sql &>>$LOG_FILE_NAME
+VALIDATE $? "Setting up the transactions schema and tables"
 
-mysql -h mysql.purnachandra.space -uroot -pExpenseApp@1 < /app/schema/backend.sql
-VALIDATE $? "input backend.sql app scheme"
+systemctl daemon-reload &>>$LOG_FILE_NAME
+VALIDATE $? "Daemon Reload"
 
-sudo systemctl daemon-reload
-VALIDATE $? "relaod deamon"
+systemctl enable backend &>>$LOG_FILE_NAME
+VALIDATE $? "Enabling backend"
 
-sudo systemctl enable backend
-VALIDATE $? "enable backend"
-
-sudo systemctl restart backend
-VALIDATE $? "restart backend"
+systemctl restart backend &>>$LOG_FILE_NAME
+VALIDATE $? "Starting Backend"
