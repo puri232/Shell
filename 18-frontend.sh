@@ -28,7 +28,7 @@ if [ $USRID -ne 0 ]
     fi
 }
 
-sudo mkdir -p $FOLDER_NAME
+mkdir -p $FOLDER_NAME
 echo "script started executing at : $TIMESTAMP" &>>$LOGS_FILE_NAME
 
 CHECK_ROOT

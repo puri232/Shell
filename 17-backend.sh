@@ -20,7 +20,7 @@ VALIDATE (){
     fi 
  }
 
-suso mkdir -p $FOLDER_NAME
+
 
 CHECK_ROOT() {
 if [ $USRID -ne 0 ]
@@ -29,6 +29,8 @@ if [ $USRID -ne 0 ]
         exit 1 #other than 1
     fi
 }
+
+mkdir -p $FOLDER_NAME
 
 echo "script started executing at : $TIMESTAMP" &>>$LOGS_FILE_NAME
 
