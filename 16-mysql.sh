@@ -20,6 +20,9 @@ VALIDATE (){
     fi 
  }
 
+sudo mkdir -p $FOLDER_NAME
+
+
 CHECK_ROOT() {
 if [ $USRID -ne 0 ]
     then 

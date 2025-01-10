@@ -20,6 +20,8 @@ VALIDATE (){
     fi 
  }
 
+suso mkdir -p $FOLDER_NAME
+
 CHECK_ROOT() {
 if [ $USRID -ne 0 ]
     then 
@@ -41,11 +43,11 @@ VALIDATE $? "enablingg existing default nodejs"
 dnf install nodejs -y  &>>$LOGS_FILE_NAME
 VALIDATE $? "install NodeJs"
 
-id expense 
+id expense &>>$LOG_FILE_NAME
 if [$? -ne 0]
 then
-useradd expense  &>>$LOGS_FILE_NAME
-VALIDATE $? "Adding Expense user"
+    useradd expense  &>>$LOGS_FILE_NAME
+    VALIDATE $? "Adding Expense user"
 else
     echo -e "expense user already exist.. $Y SKIPPING $N"
 fi
@@ -53,40 +55,33 @@ fi
 mkdir -p /app &>>$LOGS_FILE_NAME
 VALIDATE $? "Directory app creation"
 
-curl -o /tmp/backend.zip https://expense-builds.s3.us-east-1.amazonaws.com/expense-backend-v2.zip
+curl -o /tmp/backend.zip https://expense-builds.s3.us-east-1.amazonaws.com/expense-backend-v2.zip &>>$LOGS_FILE_NAME
 VALIDATE $? "curl"
 
 cd /app
-VALIDATE $? " app open for npm"
-
 rm -rf /app/*
 
 unzip /tmp/backend.zip  &>>$LOGS_FILE_NAME
 VALIDATE $? "unzip file"
 
-cd /app
-VALIDATE $? "app open"
 
 npm install  &>>$LOGS_FILE_NAME
 VALIDATE $? "install dependencies"
 
 cp /home/ec2-user/Shell/backend.service /etc/systemd/system/backend.service  &>>$LOGS_FILE_NAME
-VALIDATE $? "copy backend.service"
 
-systemctl daemon-reload
-VALIDATE $? "relaod deamon"
-
-systemctl restart backend
-VALIDATE $? "start backend"
-
-systemctl enable backend
-VALIDATE $? "enable backend"
 
 dnf install mysql -y  &>>$LOGS_FILE_NAME
 VALIDATE $? "install mysql"
 
 mysql -h mysql.purnachandra.space -uroot -pExpenseApp@1 < /app/schema/backend.sql
 VALIDATE $? "input backend.sql app scheme"
+
+systemctl daemon-reload
+VALIDATE $? "relaod deamon"
+
+systemctl enable backend
+VALIDATE $? "enable backend"
 
 systemctl restart backend
 VALIDATE $? "restart backend"
