@@ -8,7 +8,7 @@ N="\e[0m"
 
 SDIR="/app"
 
-mkdir -p /abc
+
 FOLDER_NAME="/abc"
 LOG_FILE=$(echo $0 | cut -d "." -f1 )
 TIMESTAMP=$(date +%Y-%m-%d-%H-%M-%S)
