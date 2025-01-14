@@ -41,7 +41,7 @@ fi
 
 echo "Script started executing at: $TIMESTAMP" &>>$LOG_FILE_NAME
 
-FILES=$( find $SOURCE_DIR -name "*.log" +mtime +$DAYS )
+FILES=$( find $SOURCE_DIR -name "*.log" -mtime +$DAYS )
 
 if [ -n $FILES ]
 then
