@@ -14,18 +14,10 @@ LOG_FILE=$(echo $0 | cut -d "." -f1 )
 TIMESTAMP=$(date +%Y-%m-%d-%H-%M-%S)
 LOGS_FILE_NAME="$FOLDER_NAME/$LOG_FILE-$TIMESTAMP.log"
 
-VALIDATE (){
-    if [ $1 -ne 0 ]
-    then
-        echo -e "$2 ... $R FAILURE $N"
-        exit 1
-    else
-        echo -e "$2 ... $G SUCESSS $N" 
-    fi 
- }
 USAGE(){
-    echo -e "$R USAGE  :: $N sh 18-backup.sh <sourdir> <dst Dir> <Days (optional)>"
+    echo -e "$R USAGE:: $N backup <SOURCE_DIR> <DEST_DIR> <DAYS(Optional)>"
     exit 1
 }
 
+mkdir -p /home/ec2-user/shellscript.logs
 echo "script started executing at : $TIMESTAMP" &>>$LOGS_FILE_NAME
