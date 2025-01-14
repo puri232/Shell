@@ -7,7 +7,7 @@ N="\e[0m"
 
 SDIR=$1
 DDIR=$2
-DAYS=${ 3:-14 }
+DAYS=${3:-14}
 
 
 FOLDER_NAME="/home/ec2-user/shellscript.logs"
