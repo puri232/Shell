@@ -37,3 +37,9 @@ echo "script started executing at : $TIMESTAMP" &>>$LOGS_FILE_NAME
 
 FILES_DELETED=$(find $SDIR -name "*.my" -mtime +14)
 echo " files to be deleted $FILES_DELETED
+
+while read -f file
+do 
+    echo "deleting file: $file"
+rm -rf $file
+done <<< $FILES_DELETED
