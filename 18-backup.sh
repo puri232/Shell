@@ -8,7 +8,7 @@ N="\e[0m"
 SDIR=$1
 DDIR=$2
 DAYS=${3:-14}
-
+DAYS=${3:-14}
 
 FOLDER_NAME="/home/ec2-user/shellscript.logs"
 LOG_FILE=$(echo $0 | cut -d "." -f1 )
@@ -28,10 +28,5 @@ USAGE(){
     echo -e "$R USAGE  :: $N sh 18-backup.sh <sourdir> <dst Dir> <Days (optional)>"
     exit 1
 }
-
-if [$# -lt 2]
-then
-
-fi
 
 echo "script started executing at : $TIMESTAMP" &>>$LOGS_FILE_NAME
